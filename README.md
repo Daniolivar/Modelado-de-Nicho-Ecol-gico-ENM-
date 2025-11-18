@@ -739,30 +739,7 @@ ggsave("Panel_C_Response_Curves.png", panel_c_final,
   </table>
 </div>
 
-<h2>11. Caracterización Ecofisiológica: Curvas de Respuesta Marginales</h2>
 
-<p>
-  El siguiente análisis disocia el nicho fundamental del nicho realizado, evaluando la respuesta probabilística de <i>C. gloeosporioides</i> ante gradientes ambientales aislados. Las curvas de respuesta validan la selección de variables, demostrando mecanismos conocidos de termodependencia, hidrocoria y adaptación fenológica.
-</p>
-
-<div align="center">
-  <table border="0" width="100%">
-    <tr>
-      <td width="33%" align="center" valign="top">
-        <b>Bio10: Energía Térmica</b><br>
-        <img src="https://github.com/user-attachments/assets/019885d4-96f3-453e-a719-790afcf04d5f" width="100%" alt="Bio10 Response Curve">
-      </td>
-      <td width="33%" align="center" valign="top">
-        <b>Bio12: Precipitación Anual</b><br>
-        <img src="https://github.com/user-attachments/assets/74723024-52f0-40b9-bf53-a570076d714d" width="100%" alt="Bio12 Response Curve">
-      </td>
-      <td width="33%" align="center" valign="top">
-        <b>Bio15: Estacionalidad</b><br>
-        <img src="https://github.com/user-attachments/assets/438bba90-656c-4d68-a7bc-5b6f13d769f0" width="100%" alt="Bio15 Response Curve">
-      </td>
-    </tr>
-  </table>
-</div>
 
 <h3>Interpretación Bioclimática y Fitopatológica</h3>
 
