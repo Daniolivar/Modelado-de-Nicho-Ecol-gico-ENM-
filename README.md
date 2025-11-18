@@ -65,3 +65,96 @@ library(dplyr)
 library(stringr) #
 ```
 
+1.1 Definición de Función de Descarga Robusta
+Para asegurar la reproducibilidad y evitar errores comunes en la descarga de datos (como desconexiones o inconsistencias en las columnas entre continentes), definimos la función personalizada get_occurrences_america_V7.
+
+Esta función implementa:
+
+Descarga segura por continente (Norte y Sur América).
+
+Manejo de errores (evita fallos si GBIF retorna NULL).
+
+Unión inteligente de datos usando bind_rows.
+
+Limpieza automatizada con CoordinateCleaner.
+
+Conversión forzada a data.frame base para evitar conflictos con terra::extract en pasos posteriores.
+
+Fragmento de código
+
+# 2. Definir Función de Descarga Robusta (V7.0)
+get_occurrences_america_V7 <- function(species_name, limit = 10000, clean_data = TRUE) {
+  
+  print(paste("Descargando:", species_name, "(Norteamérica)..."))
+  data_na <- occ_search(
+    scientificName = species_name,
+    continent = "north_america",
+    hasCoordinate = TRUE,
+    limit = limit
+  )$data
+  
+  print(paste("Descargando:", species_name, "(Sudamérica)..."))
+  data_sa <- occ_search(
+    scientificName = species_name,
+    continent = "south_america",
+    hasCoordinate = TRUE,
+    limit = limit
+  )$data
+  
+  if (is.null(data_na)) data_na <- data.frame()
+  if (is.null(data_sa)) data_sa <- data.frame()
+
+  print("Combinando datos...")
+  df <- dplyr::bind_rows(data_na, data_sa)
+  
+  if (nrow(df) == 0) {
+    print("No se encontraron registros.")
+    return(data.frame(decimalLongitude=numeric(), decimalLatitude=numeric()))
+  }
+
+  target_cols <- c("decimalLongitude", "decimalLatitude", "species")
+  available_cols <- intersect(target_cols, names(df))
+  
+  df <- df %>%
+    # ¡AQUÍ ESTÁ LA PRIMERA CORRECCIÓN!
+    dplyr::select(all_of(available_cols)) %>%
+    dplyr::filter(!is.na(decimalLongitude), !is.na(decimalLatitude))
+
+  if (nrow(df) == 0) {
+    print("No se encontraron registros tras el filtro inicial.")
+    return(data.frame(decimalLongitude=numeric(), decimalLatitude=numeric()))
+  }
+  
+  print(paste("Total de registros brutos:", nrow(df)))
+  
+  if (clean_data) {
+    print("Limpiando coordenadas...")
+    if (!"species" %in% names(df)) {
+      df$species <- species_name
+    }
+    df_clean <- clean_coordinates(
+      x = df,
+      lon = "decimalLongitude",
+      lat = "decimalLatitude",
+      species = "species",
+      tests = c("centroids", "equal", "gbif", "institutions", "zeros")
+    ) %>% filter(.summary == TRUE)
+    
+    print(paste("Total de registros limpios:", nrow(df_clean)))
+    
+    # --- ¡LA CORRECCIÓN CLAVE QUE ARREGLA TODO! ---
+    # Forzamos la conversión a data.frame y usamos dplyr::select
+    df_final <- as.data.frame(df_clean) %>%
+      dplyr::select(decimalLongitude, decimalLatitude)
+    # ---------------------------------------------
+      
+  } else {
+    print("Omitiendo CoordinateCleaner.")
+    df_final <- df %>%
+      dplyr::select(decimalLongitude, decimalLatitude)
+  }
+  return(df_final)
+}
+1.2 Adquisición de Datos del Patógeno
+
+
