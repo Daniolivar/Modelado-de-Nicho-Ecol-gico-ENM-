@@ -54,7 +54,7 @@ install.packages(c(
 ))
 
 
-```{r}
+
 # --- 1. CARGAR LIBRERÍAS ----
 library(rgbif)
 library(CoordinateCleaner) # ¡Clave para la limpieza!
