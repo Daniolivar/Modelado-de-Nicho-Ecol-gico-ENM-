@@ -571,14 +571,13 @@ ggsave("Panel_D_Model_Calibration.png", panel_d_final,
 <div align="center">
   <table border="0">
     <tr>
-      <td width="50%" align="center">
+      <td width="45%" align="center" valign="top">
         <b>Discriminación (Presencias vs Fondo)</b><br>
-        <img src="https://github.com/user-attachments/assets/a56..." width="100%" alt="Histogramas">
+        <img src="https://github.com/user-attachments/assets/41f28f00-b2d7-4e5f-8cb4-b48d91d0cfbe" width="100%" alt="Histogramas de Presencia vs Fondo">
       </td>
-      <td width="50%" align="center">
-        <b>Curva de Calibración</b><br>
-        <img src="<img width="633" height="557" alt="image" src="https://github.com/user-attachments/assets/85824cb7-4595-4016-a966-90e06c5beb35" />
-" width="100%" alt="Boyce Index">
+      <td width="55%" align="center" valign="top">
+        <b>Curva de Calibración & Métricas</b><br>
+        <img src="https://github.com/user-attachments/assets/089f840f-8825-46bb-908a-33f5d367bdd3" width="100%" alt="Curva de Calibración y Boyce Index">
       </td>
     </tr>
   </table>
@@ -599,6 +598,8 @@ ggsave("Panel_D_Model_Calibration.png", panel_d_final,
     <b>Calibración (ECE 0.08):</b> El <i>Expected Calibration Error</i> indica que, en promedio, la probabilidad predicha por el modelo solo se desvía un <b>8.1%</b> de la realidad observada.
   </li>
   <li>
-    <b>Discriminación:</b> Los histogramas muestran una separación clara: el modelo asigna valores altos (>0.75) a la mayoría de las presencias (rojo), mientras mantiene el fondo (azul) en valores bajos.
+    <b>Separación de Nicho:</b> Los histogramas (izquierda) muestran una separación clara: el modelo asigna valores altos a las presencias (rojo), mientras mantiene el fondo (azul) en valores bajos.
   </li>
 </ul>
+
+
