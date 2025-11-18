@@ -1,7 +1,7 @@
 # Modelado de Nicho Ecologico ENM
 Modelado de Nicho Ecológico (ENM) del fitopatógeno Colletotrichum gloeosporioides en las Américas usando R y ENMeval. Implementación de un enfoque de fondo restringido por hospederos (Aguacate, Mango, Papaya, Fresa) para evitar sesgos geográficos y mejorar la precisión biológica.
 
-🎯 Objetivo
+Objetivo
 Identificar zonas de alto riesgo climático para la antracnosis en las Américas, restringiendo el análisis a las áreas agrícolas donde sus hospederos principales están presentes, para evitar sesgos ecológicos triviales.
 
 🛠️ Metodología 
@@ -471,6 +471,7 @@ cat("✓ Mapa guardado!\n")
 <p>✅ </b> Mapa de idoneidad generado y guardado exitosamente.</p>
 
 <img width="796" height="578" alt="image" src="https://github.com/user-attachments/assets/18a3511e-ea5f-4c92-8a85-6acf552c5041" />
+<img width="809" height="585" alt="image" src="https://github.com/user-attachments/assets/9eb92994-6fc7-4e2d-a3d6-ce8f20d783f6" />
 
 
 <h3>🌍 Interpretación Biogeográfica del Modelo</h3>
@@ -601,5 +602,78 @@ ggsave("Panel_D_Model_Calibration.png", panel_d_final,
     <b>Separación de Nicho:</b> Los histogramas (izquierda) muestran una separación clara: el modelo asigna valores altos a las presencias (rojo), mientras mantiene el fondo (azul) en valores bajos.
   </li>
 </ul>
+
+
+
+## 🎲 10. Prueba de Significancia Estadística (Null Model Testing)
+
+Para confirmar que el desempeño del modelo no es producto del azar, se implementó una **prueba de aleatorización** basada en *Raes & ter Steege (2007)*. 
+Se comparó el AUC del modelo real contra 100 modelos nulos generados con datos permutados aleatoriamente.
+
+<details>
+<summary>📊 <strong>Click aquí para ver el código del Test de Aleatorización (R)</strong></summary>
+
+```r
+## ============================================================================
+## PANEL B: PRUEBA DE ALEATORIZACIÓN (Model Performance)
+## Basado en Raes & ter Steege (2007)
+## ============================================================================
+
+library(ggplot2)
+
+cat(">>> Generando Panel B: Prueba de Aleatorización...\n")
+
+# Obtener AUC del mejor modelo
+best_idx <- which.min(eval_results@results$AICc)
+observed_auc <- eval_results@results$auc.val.avg[best_idx]
+
+cat("  AUC observado:", observed_auc, "\n")
+
+# Simular AUCs nulos (permutando etiquetas)
+set.seed(123)
+n_permutations <- 100
+null_aucs <- numeric(n_permutations)
+
+# ... (Ciclo for de permutaciones) ...
+
+# Calcular p-value
+p_value <- sum(null_aucs >= observed_auc) / n_permutations
+
+# Graficar Histograma de Nulidad
+panel_b <- ggplot(null_df, aes(x = AUC)) +
+  geom_histogram(bins = 30, fill = "#feb24c", color = "white", alpha = 0.8) +
+  geom_vline(xintercept = observed_auc, color = "#d73027", 
+             linewidth = 1.5, linetype = "dashed") +
+  labs(title = "Test de Significancia (100 Permutaciones)")
+
+ggsave("Panel_B_Randomization_Test.png", panel_b, 
+       width = 6, height = 4, dpi = 300, bg = "white")
+
+<h2>🎲 10. Prueba de Significancia Estadística (Null Model Testing)</h2>
+
+<p>
+  Para confirmar que el desempeño del modelo no es producto de la autocorrelación espacial o el azar, 
+  se implementó una prueba de aleatorización (<i>Raes & ter Steege, 2007</i>) con 100 permutaciones.
+</p>
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/7713560a-8812-4db2-aae4-1753692c506b" width="90%" alt="Prueba de Aleatorización AUC">
+  <p><em>Fig 4. Comparación del AUC del modelo empírico (rojo) vs. distribución nula (naranja).</em></p>
+</div>
+
+<h3>📌 Interpretación de la Prueba:</h3>
+<ul>
+  <li>
+    <b>Distancia Significativa:</b> Existe una separación completa entre la distribución de los modelos nulos (que oscilan entre AUC 0.60 - 0.75) y el modelo observado (<b>AUC 0.827</b>).
+  </li>
+  <li>
+    <b>Certeza Estadística (p < 0.01):</b> En ninguna de las 100 simulaciones aleatorias se logró un desempeño superior o igual al modelo real. Esto confirma con un 99% de confianza que <b>las asociaciones climáticas encontradas (Temperatura y Lluvia) son reales</b> y biológicamente significativas.
+  </li>
+  <li>
+    <b>Superación del Sesgo Espacial:</b> El hecho de que los modelos nulos tengan un promedio > 0.5 es normal en datos espaciales (bias de muestreo), pero la superioridad del modelo real valida la eficacia de nuestra estrategia de <i>background</i> restringido.
+  </li>
+</ul>
+
+<hr>
 
 
