@@ -504,7 +504,7 @@ cat("✓ Mapa guardado!\n")
 </p>
 
 <div align="center">
-  <img src="<img width="1267" height="583" alt="image" src="https://github.com/user-attachments/assets/42b95c1d-c834-4b93-b50c-dd5a16d49cb5" />
+  <img src="[<img width="1267" height="583" alt="image" src="https://github.com/user-attachments/assets/42b95c1d-c834-4b93-b50c-dd5a16d49cb5"] />
 " width="70%" alt="Gráfico de Importancia de Variables">
   <p><em>Fig 2. Importancia relativa de las variables bioclimáticas en el modelo Maxent.</em></p>
 </div>
