@@ -157,6 +157,136 @@ get_occurrences_america_V7 <- function(species_name, limit = 10000, clean_data =
   }
   return(df_final)
 }
-
+```
 ##🦠 3. Adquisición de Datos del Patógeno
 Descargamos los registros de Colletotrichum gloeosporioides utilizando la función robusta, asegurando que las presencias (occs) estén limpias y listas para el modelado.
+
+```r
+## --- 2. PREPARAR PRESENCIAS (Occs) - ¡CON LIMPIEZA! ---
+print("Descargando patógeno (CON CoordinateCleaner)...")
+# Usamos V7 con clean_data = TRUE
+occs <- get_occurrences_america_V7("Colletotrichum gloeosporioides", clean_data = TRUE)
+```
+##🥑 4. Adquisición de Datos de Hospederos
+Para restringir el espacio de fondo ("M") a zonas biológicamente relevantes, descargamos los registros de los principales hospederos productivos: Aguacate, Mango, Fresa y Papaya. Estos puntos se combinan en un solo objeto vectorial.
+
+```r
+## --- 3. PREPARAR HOSPEDEROS (M) - ¡CON LIMPIEZA! ---
+print("Descargando hospederos (CON CoordinateCleaner)...")
+occ_aguacate <- get_occurrences_america_V7("Persea americana", clean_data = TRUE)
+occ_mango <- get_occurrences_america_V7("Mangifera indica", clean_data = TRUE)
+occ_fresa <- get_occurrences_america_V7("Fragaria", clean_data = TRUE)
+occ_papaya <- get_occurrences_america_V7("Carica papaya", clean_data = TRUE)
+
+puntos_hospederos_df <- dplyr::bind_rows(occ_aguacate, occ_mango, occ_fresa, occ_papaya) %>%
+  dplyr::filter(!is.na(decimalLongitude), !is.na(decimalLatitude))
+puntos_hospederos_vect <- terra::vect(puntos_hospederos_df, 
+                                      geom = c("decimalLongitude", "decimalLatitude"), 
+                                      crs = "EPSG:4326")
+print("¡Hospederos listos!")
+
+```
+
+##🌦️ 5. Preparación de Variables Climáticas
+Descargamos los datos de WorldClim 2.1 y realizamos una selección de variables a priori para evitar la multicolinealidad. Se seleccionaron bio10, bio12 y bio15 por su relevancia fisiológica para el desarrollo fúngico (calor y humedad).
+
+```r
+## --- 4. PREPARAR CAPAS AMBIENTALES (env) - NUEVAS VARIABLES ---
+print("Preparando capas ambientales...")
+bio_global <- geodata::worldclim_global(var = "bio", res = 10, path = ".")
+names(bio_global) <- paste0("bio", 1:19)
+americas_extent <- ext(-170, -30, -55, 75)
+env_americas <- terra::crop(bio_global, americas_extent)
+
+# CAMBIO: Ahora seleccionas bio10, bio12, bio15
+vars_seleccionadas <- c("bio10", "bio12", "bio15")
+env <- env_americas[[vars_seleccionadas]]
+
+print("¡Capas 'env' listas!")
+print(env)
+
+```
+
+
+##🗺️ 6. Construcción del Fondo (Background M)
+Generamos la máscara de fondo creando un buffer de 100 km alrededor de los cultivos. Luego, muestreamos 10,000 puntos aleatorios (bg_points) exclusivamente dentro de esta zona, evitando sesgos por comparar con climas extremos no agrícolas.
+
+
+```r
+## --- 5. CREAR MÁSCARA "M" y FONDO "BG" ---
+print("Creando 'M' y 'BG'...")
+m_hospederos <- terra::buffer(puntos_hospederos_vect, width = 100000) %>%
+  terra::rasterize(env[[1]], background = NA) %>%
+  terra::subst(from = 1, to = 1)
+
+bg_points <- terra::spatSample(x = m_hospederos, size = 10000, method = "random", as.df = TRUE, xy = TRUE) %>%
+  dplyr::rename(decimalLongitude = x, decimalLatitude = y)
+print("¡'M' y 'BG' listos!")
+```
+
+
+
+##⚙️ 7. Ejecución del Modelo ENMeval
+Ejecutamos la evaluación de modelos utilizando maxnet. Se prueban múltiples configuraciones de complejidad (Lineal, Cuadrática, Hinge) y regularización para encontrar el modelo óptimo, utilizando validación cruzada (k-fold) para evitar el sobreajuste.
+
+```r
+## --- 6. CORRER ENMEVAL ---
+cat("\n=== VERIFICACIÓN PRE-VUELO ===\n")
+stopifnot(is.data.frame(occs), is.data.frame(bg_points), ncol(occs)==2)
+
+cat("\n=== EJECUTANDO ENMevaluate ===\n")
+eval_results <- ENMeval::ENMevaluate(
+  occs = occs,
+  env = env,
+  bg = bg_points,
+  algorithm = 'maxnet',
+  partitions = 'randomkfold',
+  partition.settings = list(kfolds = 5),
+  tune.args = list(
+    fc = c("L", "Q", "H", "LQ", "LQH"),
+    rm = c(1, 2, 3)
+  ),
+  quiet = FALSE
+)
+
+cat("\n=== ¡EVALUACIÓN COMPLETADA! ===\n")
+print(eval_results)
+```
+
+
+##📊 8. Selección del Mejor Modelo y Predicción
+Analizamos la tabla de resultados para seleccionar el modelo con el menor AICc (Criterio de Información de Akaike). Generamos el mapa de idoneidad final y lo exportamos como un archivo raster GeoTIFF.
+
+```r
+## --- VER RESULTADOS Y PREDECIR ---
+results_table <- eval_results@results
+
+# Identificar el mejor modelo (menor AICc)
+best_idx <- which.min(results_table$AICc)
+cat("\n=== MEJOR MODELO (menor AICc) ===\n")
+print(results_table[best_idx, ])
+
+# Extraer el mejor modelo
+best_model <- eval_results@models[[best_idx]]
+
+# Hacer predicción CON manejo de NAs
+prediction <- predict(env, best_model, type = "cloglog", na.rm = TRUE)
+
+# Visualizar
+library(terra)
+colores <- colorRampPalette(c("white", "yellow", "orange", "red", "darkred"))(100)
+plot(prediction, 
+     main = "Idoneidad de hábitat - C. gloeosporioides",
+     col = colores)
+points(occs$decimalLongitude, occs$decimalLatitude, pch = 20, cex = 0.3, col = "blue")
+
+# Guardar el raster
+terra::writeRaster(prediction, "mapa_idoneidad_colletotrichum.tif", overwrite = TRUE)
+cat("✓ Mapa guardado!\n")
+
+```
+
+<img width="831" height="586" alt="image" src="https://github.com/user-attachments/assets/4131c0cd-c1f8-45b9-823e-3fb41b9fed10" />
+
+
+
