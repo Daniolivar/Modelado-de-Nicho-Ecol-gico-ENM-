@@ -468,7 +468,7 @@ cat("✓ Mapa guardado!\n")
   </tr>
 </table>
 
-<p>✅ <b>Estado:</b> Mapa de idoneidad generado y guardado exitosamente.</p>
+<p>✅ </b> Mapa de idoneidad generado y guardado exitosamente.</p>
 
 <img width="796" height="578" alt="image" src="https://github.com/user-attachments/assets/18a3511e-ea5f-4c92-8a85-6acf552c5041" />
 
