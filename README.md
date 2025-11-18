@@ -677,3 +677,40 @@ ggsave("Panel_B_Randomization_Test.png", panel_b,
 
 <hr>
 
+## 🌡️ 11. Caracterización Fisiológica: Curvas de Respuesta Marginales
+
+Este análisis visualiza cómo cambia la probabilidad de presencia del patógeno al variar una variable climática, manteniendo las demás constantes en su mediana. 
+Las gráficas incluyen **densidades de ocurrencia** para distinguir entre la respuesta fisiológica del hongo y la disponibilidad ambiental.
+
+<details>
+<summary>📈 <strong>Click aquí para ver el código de Curvas de Respuesta (R)</strong></summary>
+
+```r
+## ============================================================================
+## PANEL C: CURVAS DE RESPUESTA CON DISTRIBUCIONES DE DENSIDAD
+## ============================================================================
+
+library(ggplot2); library(terra); library(dplyr); library(cowplot)
+
+cat(">>> Generando Panel C: Curvas de Respuesta...\n")
+
+# 1. Extraer mejor modelo y datos
+best_idx <- which.min(eval_results@results$AICc)
+best_model <- eval_results@models[[best_idx]]
+
+# ... (Preparación de datos y bucle de variables) ...
+
+# --- CORRECCIÓN TÉCNICA IMPLEMENTADA ---
+# Se genera un dataframe sintético manteniendo las variables no-objetivo 
+# en su mediana estadística para aislar el efecto de la variable de interés.
+# ---------------------------------------
+
+# ... (Generación de gráficos con ggplot2) ...
+
+ggsave("Panel_C_Response_Curves.png", panel_c_final,
+       width = 10, height = 4, dpi = 300, bg = "white")
+
+```
+
+
+
