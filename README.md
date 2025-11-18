@@ -739,23 +739,53 @@ ggsave("Panel_C_Response_Curves.png", panel_c_final,
   </table>
 </div>
 
-<h3>Interpretación Bioclimática</h3>
+<h2>11. Caracterización Ecofisiológica: Curvas de Respuesta Marginales</h2>
+
+<p>
+  El siguiente análisis disocia el nicho fundamental del nicho realizado, evaluando la respuesta probabilística de <i>C. gloeosporioides</i> ante gradientes ambientales aislados. Las curvas de respuesta validan la selección de variables, demostrando mecanismos conocidos de termodependencia, hidrocoria y adaptación fenológica.
+</p>
+
+<div align="center">
+  <table border="0" width="100%">
+    <tr>
+      <td width="33%" align="center" valign="top">
+        <b>Bio10: Energía Térmica</b><br>
+        <img src="https://github.com/user-attachments/assets/019885d4-96f3-453e-a719-790afcf04d5f" width="100%" alt="Bio10 Response Curve">
+      </td>
+      <td width="33%" align="center" valign="top">
+        <b>Bio12: Precipitación Anual</b><br>
+        <img src="https://github.com/user-attachments/assets/74723024-52f0-40b9-bf53-a570076d714d" width="100%" alt="Bio12 Response Curve">
+      </td>
+      <td width="33%" align="center" valign="top">
+        <b>Bio15: Estacionalidad</b><br>
+        <img src="https://github.com/user-attachments/assets/438bba90-656c-4d68-a7bc-5b6f13d769f0" width="100%" alt="Bio15 Response Curve">
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3>Interpretación Bioclimática y Fitopatológica</h3>
 
 <ul>
   <li>
-    <b>Bio10 (Temperatura Media del Trimestre más Cálido): Termofilia Obligada.</b><br>
-    La distribución de densidad (área roja) exhibe un patrón bimodal marcado con picos óptimos en el rango de <b>24°C a 28°C</b>, coincidiendo con la ventana térmica fisiológica óptima citada en literatura para la germinación de conidios y desarrollo de apresorios en <i>C. gloeosporioides</i>. La curva de idoneidad (línea negra) muestra una latencia en temperaturas <15°C, confirmando que el patógeno ve restringida su tasa metabólica y capacidad infectiva en zonas templadas de alta latitud o altitud, a menos que se presenten microclimas térmicos favorables.
+    <b>Bio10 (Temperatura Media del Trimestre más Cálido): Determinismo Térmico y Nicho Bimodal.</b><br>
+    La curva exhibe un comportamiento sigmoide asintótico con un umbral fisiológico inferior en <b>15°C</b>, coincidiendo con el cero fisiológico reportado para la germinación de conidios y crecimiento micelial. La distribución de idoneidad presenta un patrón bimodal (picos a ~20°C y ~28°C) que refleja la plasticidad del patógeno para colonizar dos estratos agroecológicos distintos: el nicho térmico de hospederos de zonas altas (<i>Persea americana</i> cv. Hass, <i>Fragaria</i>) y el de hospederos tropicales de tierras bajas (<i>Mangifera indica</i>, <i>Carica papaya</i>).
   </li>
   
   <li>
-    <b>Bio12 (Precipitación Anual): Respuesta Unimodal e Higro-dependencia.</b><br>
-    Se observa una respuesta unimodal positiva con un óptimo ecológico centrado en los <b>1,000 - 1,500 mm anuales</b>. El rápido ascenso de la curva confirma la necesidad crítica de agua libre o alta humedad relativa para la esporulación y dispersión por salpicadura (<i>splash dispersal</i>). El declive en la idoneidad en regímenes hiperhúmedos (>3,000 mm) sugiere un límite superior, posiblemente asociado al lavado físico de inóculo o a condiciones de hipoxia edáfica que afectan la fisiología del hospedero, reduciendo la disponibilidad de tejido susceptible.
+    <b>Bio12 (Precipitación Anual): Hidrocoria y Restricción del Nicho Realizado.</b><br>
+    La respuesta unimodal sesgada a la derecha, con un ascenso abrupto hacia el óptimo (1,000 - 1,800 mm), valida la dependencia crítica de la precipitación para la dispersión de esporas (hidrocoria por salpicadura o <i>rain-splash</i>) desde los acérvulos mucilaginosos. El descenso en la idoneidad en regímenes >3,000 mm no implica necesariamente intolerancia fisiológica del hongo, sino una restricción agronómica del nicho realizado: las zonas hiperhúmedas suelen carecer de cultivos comerciales intensivos de los hospederos objetivo debido a problemas de anoxia radicular y manejo fitosanitario inviable.
   </li>
   
   <li>
-    <b>Bio15 (Estacionalidad de la Precipitación): Plasticidad Fenotípica.</b><br>
-    La curva revela una complejidad ecológica significativa. El pico de densidad en valores bajos (<20) indica una preferencia por climas ecuatoriales isotérmicos e isohígricos (lluvia constante). Sin embargo, el incremento de la idoneidad (línea negra) hacia valores altos de estacionalidad (>80) sugiere una adaptación a regímenes monzónicos o subtropicales con estaciones secas marcadas. Esto es consistente con la capacidad del hongo para sobrevivir como micelio latente o mediante estructuras de resistencia en tejidos momificados durante la estación seca, reactivando su ciclo infeccioso al inicio de las lluvias (sincronización fenológica).
+    <b>Bio15 (Estacionalidad de la Precipitación): Sincronización Fenológica y Quiescencia.</b><br>
+    La curva revela una adaptación evolutiva compleja. La alta idoneidad en valores bajos corresponde a zonas de infección continua (trópico húmedo). Sin embargo, el repunte en alta estacionalidad sugiere una sincronización con la fenología del hospedero. Cultivos como <i>M. indica</i> requieren estrés hídrico para la inducción floral; <i>C. gloeosporioides</i> sobrevive estos periodos mediante infecciones latentes (quiescencia) en tejidos inmaduros, reactivando su patogenicidad únicamente cuando la maduración del fruto coincide con el inicio de las lluvias.
   </li>
 </ul>
+
+<blockquote>
+  <p><b>Conclusión del Modelo:</b> El algoritmo Maxent (configuración LQH, rm=1) describe a <i>C. gloeosporioides</i> no como un organismo limitado meramente por extremos climáticos, sino como un patógeno cuyo nicho realizado está fuertemente constreñido por la fenología reproductiva de sus hospederos y la viabilidad agronómica de las zonas de producción en las Américas.</p>
+</blockquote>
+<hr>
 
 
