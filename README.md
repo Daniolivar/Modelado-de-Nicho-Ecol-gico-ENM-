@@ -157,3 +157,6 @@ get_occurrences_america_V7 <- function(species_name, limit = 10000, clean_data =
   }
   return(df_final)
 }
+
+##🦠 3. Adquisición de Datos del Patógeno
+Descargamos los registros de Colletotrichum gloeosporioides utilizando la función robusta, asegurando que las presencias (occs) estén limpias y listas para el modelado.
