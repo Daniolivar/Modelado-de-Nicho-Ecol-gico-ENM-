@@ -4,7 +4,7 @@ Modelado de Nicho Ecológico (ENM) del fitopatógeno Colletotrichum gloeosporioi
 🎯 Objetivo
 Identificar zonas de alto riesgo climático para la antracnosis en las Américas, restringiendo el análisis a las áreas agrícolas donde sus hospederos principales están presentes, para evitar sesgos ecológicos triviales.
 
-🛠️ Metodología ("Plan Sofisticado")
+🛠️ Metodología 
 Datos de Presencia: Descarga y limpieza de registros de GBIF para C. gloeosporioides (n = 1,404). Se implementó una limpieza de coordenadas personalizada para evitar conflictos de paquetes.
 
 Definición del Área M (Fondo):
