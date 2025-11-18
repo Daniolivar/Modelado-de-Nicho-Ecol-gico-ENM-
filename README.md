@@ -168,6 +168,7 @@ print("Descargando patógeno (CON CoordinateCleaner)...")
 occs <- get_occurrences_america_V7("Colletotrichum gloeosporioides", clean_data = TRUE)
 ```
 ##🥑 4. Adquisición de Datos de Hospederos
+
 Para restringir el espacio de fondo ("M") a zonas biológicamente relevantes, descargamos los registros de los principales hospederos productivos: Aguacate, Mango, Fresa y Papaya. Estos puntos se combinan en un solo objeto vectorial.
 
 ```r
@@ -187,6 +188,7 @@ print("¡Hospederos listos!")
 ```
 
 ##🌦️ 5. Preparación de Variables Climáticas
+
 Descargamos los datos de WorldClim 2.1 y realizamos una selección de variables a priori para evitar la multicolinealidad. Se seleccionaron bio10, bio12 y bio15 por su relevancia fisiológica para el desarrollo fúngico (calor y humedad).
 
 ```r
@@ -208,6 +210,7 @@ print(env)
 
 
 ##🗺️ 6. Construcción del Fondo (Background M)
+
 Generamos la máscara de fondo creando un buffer de 100 km alrededor de los cultivos. Luego, muestreamos 10,000 puntos aleatorios (bg_points) exclusivamente dentro de esta zona, evitando sesgos por comparar con climas extremos no agrícolas.
 
 
@@ -226,6 +229,7 @@ print("¡'M' y 'BG' listos!")
 
 
 ##⚙️ 7. Ejecución del Modelo ENMeval
+
 Ejecutamos la evaluación de modelos utilizando maxnet. Se prueban múltiples configuraciones de complejidad (Lineal, Cuadrática, Hinge) y regularización para encontrar el modelo óptimo, utilizando validación cruzada (k-fold) para evitar el sobreajuste.
 
 ```r
@@ -254,6 +258,7 @@ print(eval_results)
 
 
 ##📊 8. Selección del Mejor Modelo y Predicción
+
 Analizamos la tabla de resultados para seleccionar el modelo con el menor AICc (Criterio de Información de Akaike). Generamos el mapa de idoneidad final y lo exportamos como un archivo raster GeoTIFF.
 
 ```r
