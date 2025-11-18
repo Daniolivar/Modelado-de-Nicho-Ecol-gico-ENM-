@@ -184,7 +184,6 @@ puntos_hospederos_vect <- terra::vect(puntos_hospederos_df,
                                       geom = c("decimalLongitude", "decimalLatitude"), 
                                       crs = "EPSG:4326")
 print("¡Hospederos listos!")
-
 ```
 
 ##🌦️ 5. Preparación de Variables Climáticas
