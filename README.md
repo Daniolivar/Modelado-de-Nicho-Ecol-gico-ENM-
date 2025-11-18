@@ -649,6 +649,7 @@ panel_b <- ggplot(null_df, aes(x = AUC)) +
 ggsave("Panel_B_Randomization_Test.png", panel_b, 
        width = 6, height = 4, dpi = 300, bg = "white")
 
+```
 <h2>🎲 10. Prueba de Significancia Estadística (Null Model Testing)</h2>
 
 <p>
@@ -675,5 +676,4 @@ ggsave("Panel_B_Randomization_Test.png", panel_b,
 </ul>
 
 <hr>
-
 
