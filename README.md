@@ -439,7 +439,59 @@ cat("✓ Mapa guardado!\n")
 
 ```
 
-<img width="831" height="586" alt="image" src="https://github.com/user-attachments/assets/4131c0cd-c1f8-45b9-823e-3fb41b9fed10" />
+<h3>🏆 Resumen del Mejor Modelo Seleccionado</h3>
+
+<table border="0">
+  <tr>
+    <td width="40%"><b>Feature Class (fc):</b></td>
+    <td><code>LQH</code> (Linear, Quadratic, Hinge)</td>
+  </tr>
+  <tr>
+    <td><b>Regularization (rm):</b></td>
+    <td><code>1</code></td>
+  </tr>
+  <tr>
+    <td><b>AICc:</b></td>
+    <td><code>9622.828</code></td>
+  </tr>
+  <tr>
+    <td><b>AUC (Validación):</b></td>
+    <td><code>0.8271</code> 🟢 <i>(Alto desempeño)</i></td>
+  </tr>
+  <tr>
+    <td><b>AUC (Entrenamiento):</b></td>
+    <td><code>0.8336</code></td>
+  </tr>
+  <tr>
+    <td><b>Diferencia (Overfitting):</b></td>
+    <td><code>0.006</code> <i>(Mínimo, modelo robusto)</i></td>
+  </tr>
+</table>
+
+<p>✅ <b>Estado:</b> Mapa de idoneidad generado y guardado exitosamente.</p>
+
+<img width="796" height="578" alt="image" src="https://github.com/user-attachments/assets/18a3511e-ea5f-4c92-8a85-6acf552c5041" />
 
 
+<h3>🌍 Interpretación Biogeográfica del Modelo</h3>
+
+<p>
+  La proyección espacial muestra una fuerte correspondencia entre la idoneidad climática predicha 
+  (<span style="color: darkred;"><b>zonas rojas</b></span>) y las ocurrencias conocidas del patógeno 
+  (<span style="color: blue;"><b>puntos azules</b></span>), validando visualmente el alto AUC (0.827).
+</p>
+
+<ul>
+  <li><b>Patrón Latitudinal:</b> Se observa una clara restricción a zonas <b>tropicales y subtropicales</b>. El riesgo disminuye drásticamente en latitudes altas (>40°N y >40°S), lo cual es consistente con la limitación térmica del hongo (reflejada en la variable <i>bio10</i>).</li>
+  
+  <li><b>Hotspots de Riesgo Fitosanitario:</b> El modelo identifica zonas de máxima idoneidad (Clase > 0.8) en regiones clave para la producción de los hospederos estudiados:
+    <ul>
+      <li><b>Norteamérica:</b> Sureste de EE.UU. (Florida) y la costa del Golfo de México.</li>
+      <li><b>Región Andina:</b> Zonas cafeteras y frutícolas de Colombia, Ecuador y Perú.</li>
+      <li><b>Sudamérica:</b> El Cerrado y la Mata Atlántica en Brasil, zonas críticas para la producción de papaya y mango.</li>
+    </ul>
+  </li>
+
+  <li><b>Validación del Fondo Restringido:</b> A diferencia de los modelos globales genéricos, este enfoque delimita correctamente la ausencia de riesgo en zonas áridas (ej. desiertos del norte de México/Sur de EE.UU.) donde, aunque la temperatura podría ser adecuada, la falta de precipitación (<i>bio12</i>, <i>bio15</i>) y la ausencia de hospederos impiden el establecimiento de la enfermedad.</li>
+</ul>
 
