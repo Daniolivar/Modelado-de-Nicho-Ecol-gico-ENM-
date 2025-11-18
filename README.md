@@ -29,3 +29,25 @@ Mejor Modelo: Configuración LQH con rm = 1.
 Desempeño: AUC de Validación = 0.827. La diferencia entre AUC de entrenamiento y validación fue mínima (0.006), indicando ausencia de sobreajuste.
 
 Test de Nulidad: El modelo es significativamente mejor que el azar (p < 0.01).
+
+
+
+
+
+```{r}
+
+install.packages(c(
+  "rgbif", 
+  "CoordinateCleaner", 
+  "geodata", 
+  "terra", 
+  "sf", 
+  "dplyr", 
+  "stringr", 
+  "ENMeval", 
+  "maxnet"
+))
+
+
+
+```
