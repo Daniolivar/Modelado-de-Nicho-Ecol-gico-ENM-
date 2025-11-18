@@ -522,3 +522,83 @@ cat("✓ Mapa guardado!\n")
     📉 <b>Bio15 (Estacionalidad):</b> Tiene la menor influencia, indicando que el patógeno tolera cierta variabilidad en los patrones de lluvia siempre que se cumplan los requisitos de temperatura y humedad relativa.
   </li>
 </ul>
+
+## 📊 9. Evaluación de Calibración y Fiabilidad (Boyce & ECE)
+
+Este bloque de código calcula métricas avanzadas para asegurar que el modelo no esté sobreajustado y genera el **Panel de Diagnóstico** (Panel D) con curvas de calibración y histogramas de discriminación.
+
+<details>
+<summary>📐 <strong>Click aquí para ver el código de Validación (R)</strong></summary>
+
+```r
+## ============================================================================
+## PANEL D: CALIBRACIÓN DEL MODELO
+## (Estilo publicación - con scatter plot, histogramas y métricas)
+## ============================================================================
+
+library(ggplot2); library(cowplot); library(terra); library(dplyr)
+
+cat(">>> Generando Panel D: Calibración del Modelo...\n")
+
+# --- 1. EXTRAER MEJOR MODELO Y HACER PREDICCIONES ---
+best_idx <- which.min(eval_results@results$AICc)
+best_model <- eval_results@models[[best_idx]]
+
+# ... (Resto del código de cálculo de Boyce y ECE) ...
+
+# --- 2. CALCULAR MÉTRICAS DE CALIBRACIÓN ---
+# Índice de Boyce Continuo (simplificado)
+calc_boyce <- function(pred_presence, pred_background, n_bins = 10) {
+  # ... lógica de la función ...
+  boyce <- cor(1:n_bins, ratio, method = "spearman")
+  return(boyce)
+}
+
+# ... (Código de gráficos ggplot y cowplot) ...
+
+ggsave("Panel_D_Model_Calibration.png", panel_d_final,
+       width = 7, height = 6, dpi = 300, bg = "white")
+```
+
+
+<h3>📈 Validación Avanzada y Calibración</h3>
+
+<p>
+  Además del AUC, se evaluó la robustez del modelo mediante el <b>Índice de Boyce</b> (independiente del umbral) 
+  y métricas de error de calibración (ECE/MCE) utilizando <i>n = 1,404</i> presencias de validación.
+</p>
+
+<div align="center">
+  <table border="0">
+    <tr>
+      <td width="50%" align="center">
+        <b>Discriminación (Presencias vs Fondo)</b><br>
+        <img src="https://github.com/user-attachments/assets/a56..." width="100%" alt="Histogramas">
+      </td>
+      <td width="50%" align="center">
+        <b>Curva de Calibración</b><br>
+        <img src="<img width="633" height="557" alt="image" src="https://github.com/user-attachments/assets/85824cb7-4595-4016-a966-90e06c5beb35" />
+" width="100%" alt="Boyce Index">
+      </td>
+    </tr>
+  </table>
+  
+  <p>
+    <code>Boyce Index: 0.976</code> 🌟 | 
+    <code>ECE: 0.082</code> (Error Promedio Bajo) | 
+    <code>MCE: 0.202</code> (Error Máximo)
+  </p>
+</div>
+
+<h4>📌 Interpretación de Resultados:</h4>
+<ul>
+  <li>
+    <b>Boyce Index (0.976):</b> Cercano al 1.0 teórico. Confirma que el modelo ordena la idoneidad casi perfectamente respecto a las presencias reales.
+  </li>
+  <li>
+    <b>Calibración (ECE 0.08):</b> El <i>Expected Calibration Error</i> indica que, en promedio, la probabilidad predicha por el modelo solo se desvía un <b>8.1%</b> de la realidad observada.
+  </li>
+  <li>
+    <b>Discriminación:</b> Los histogramas muestran una separación clara: el modelo asigna valores altos (>0.75) a la mayoría de las presencias (rojo), mientras mantiene el fondo (azul) en valores bajos.
+  </li>
+</ul>
