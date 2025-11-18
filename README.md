@@ -65,24 +65,26 @@ library(dplyr)
 library(stringr) #
 ```
 
-1.1 Definición de Función de Descarga Robusta
-Para asegurar la reproducibilidad y evitar errores comunes en la descarga de datos (como desconexiones o inconsistencias en las columnas entre continentes), definimos la función personalizada get_occurrences_america_V7.
 
-Esta función implementa:
 
-Descarga segura por continente (Norte y Sur América).
 
-Manejo de errores (evita fallos si GBIF retorna NULL).
 
-Unión inteligente de datos usando bind_rows.
 
-Limpieza automatizada con CoordinateCleaner.
 
-Conversión forzada a data.frame base para evitar conflictos con terra::extract en pasos posteriores.
+## 🛠️ 2. Función de Descarga y Limpieza Robusta
+Para solucionar los problemas de desconexión y formatos de objetos incompatibles (el error spatialvalid), definimos una función personalizada get_occurrences_america_V7. Esta función:
 
-Fragmento de código
+Descarga datos por continente para evitar tiempos de espera.
 
-# 2. Definir Función de Descarga Robusta (V7.0)
+Maneja respuestas vacías (NULL) sin romper el script.
+
+Aplica la limpieza de coordenadas y fuerza el resultado a un data.frame simple compatible con ENMeval.
+
+
+```r
+## --- 1. FUNCIÓN DE DESCARGA (V7.0 - CORREGIDA) ---
+# (Esta función maneja 'NULL', 'bind_rows', Y el error 'spatialvalid')
+
 get_occurrences_america_V7 <- function(species_name, limit = 10000, clean_data = TRUE) {
   
   print(paste("Descargando:", species_name, "(Norteamérica)..."))
@@ -155,6 +157,3 @@ get_occurrences_america_V7 <- function(species_name, limit = 10000, clean_data =
   }
   return(df_final)
 }
-1.2 Adquisición de Datos del Patógeno
-
-
