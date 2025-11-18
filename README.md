@@ -32,35 +32,26 @@ Test de Nulidad: El modelo es significativamente mejor que el azar (p < 0.01).
 
 
 
-📦 1. Configuración del Entorno
-Para reproducir este análisis, es necesario instalar un ecosistema de paquetes de R especializados en bioinformática y análisis espacial. Este bloque asegura que todas las dependencias estén presentes.
-
-Las librerías clave incluyen:
-
-rgbif & geodata: Para la descarga automatizada de ocurrencias biológicas y capas climáticas.
-
-CoordinateCleaner: Para la limpieza automatizada de errores geográficos comunes.
-
-terra & sf: Para el manejo de datos raster y vectoriales (la base del análisis espacial).
-
-ENMeval & maxnet: Para la calibración rigurosa del modelo y la ejecución del algoritmo Maxent (sin necesidad de Java).
 
 
-```{r}
+## 📦 1. Configuración del Entorno
 
+Para garantizar la reproducibilidad del análisis, este flujo de trabajo utiliza un conjunto específico de librerías de R para la descarga de datos, el manejo espacial y el modelado ecológico.
+
+Se utilizan paquetes como `maxnet` para evitar dependencias externas complejas (como Java) y `CoordinateCleaner` para asegurar la calidad de los datos biológicos.
+
+```r
 install.packages(c(
-  "rgbif", 
-  "CoordinateCleaner", 
-  "geodata", 
-  "terra", 
-  "sf", 
-  "dplyr", 
-  "stringr", 
-  "ENMeval", 
-  "maxnet"
+  "rgbif",              # Descarga de ocurrencias de GBIF
+  "CoordinateCleaner",  # Limpieza automatizada de coordenadas
+  "geodata",            # Descarga de clima (WorldClim)
+  "terra",              # Manejo de datos raster y vectoriales
+  "sf",                 # Operaciones espaciales simples
+  "dplyr",              # Manipulación de datos
+  "stringr",            # Manejo de cadenas de texto
+  "ENMeval",            # Calibración y evaluación de modelos
+  "maxnet"              # Algoritmo Maxent (versión R pura)
 ))
-
-```
 
 
 ```{r}
