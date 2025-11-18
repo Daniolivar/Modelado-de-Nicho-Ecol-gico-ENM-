@@ -495,3 +495,31 @@ cat("✓ Mapa guardado!\n")
   <li><b>Validación del Fondo Restringido:</b> A diferencia de los modelos globales genéricos, este enfoque delimita correctamente la ausencia de riesgo en zonas áridas (ej. desiertos del norte de México/Sur de EE.UU.) donde, aunque la temperatura podría ser adecuada, la falta de precipitación (<i>bio12</i>, <i>bio15</i>) y la ausencia de hospederos impiden el establecimiento de la enfermedad.</li>
 </ul>
 
+
+<h3>🌱 Drivers Ecológicos: ¿Qué controla al patógeno?</h3>
+
+<p>
+  El análisis de contribución de variables revela que la distribución de <i>C. gloeosporioides</i> en las Américas 
+  está gobernada principalmente por la <b>energía térmica</b>, seguida de la disponibilidad hídrica.
+</p>
+
+<div align="center">
+  <img src="<img width="1267" height="583" alt="image" src="https://github.com/user-attachments/assets/42b95c1d-c834-4b93-b50c-dd5a16d49cb5" />
+" width="70%" alt="Gráfico de Importancia de Variables">
+  <p><em>Fig 2. Importancia relativa de las variables bioclimáticas en el modelo Maxent.</em></p>
+</div>
+
+<p><b>Interpretación Biológica:</b></p>
+<ul>
+  <li>
+    🔥 <b>Bio10 (Temperatura Media del Trimestre más Cálido):</b> Es la variable dominante (<i>Importance > 16</i>). 
+    Esto confirma que el patógeno es <b>termo-dependiente</b>. Su desarrollo está restringido principalmente por la falta de calor suficiente durante la temporada de crecimiento.
+  </li>
+  <li>
+    💧 <b>Bio12 (Precipitación Anual):</b> Juega un papel secundario pero crítico (<i>Importance ~ 11.5</i>). 
+    El hongo requiere niveles basales de humedad para la esporulación, excluyéndolo de zonas áridas aunque sean cálidas.
+  </li>
+  <li>
+    📉 <b>Bio15 (Estacionalidad):</b> Tiene la menor influencia, indicando que el patógeno tolera cierta variabilidad en los patrones de lluvia siempre que se cumplan los requisitos de temperatura y agua total.
+  </li>
+</ul>
