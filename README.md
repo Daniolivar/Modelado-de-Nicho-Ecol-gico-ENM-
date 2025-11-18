@@ -714,7 +714,7 @@ ggsave("Panel_C_Response_Curves.png", panel_c_final,
        width = 10, height = 4, dpi = 300, bg = "white")
 
 ```
-<h2>11. Caracterización Ecofisiológica: Curvas de Respuesta Marginales</h2>
+<h2>11. Curvas de Respuesta Marginales</h2>
 
 <p>
   El análisis de las curvas de respuesta marginales permite disociar el nicho fundamental del nicho realizado, evaluando la respuesta probabilística del patógeno ante gradientes ambientales aislados. A continuación, se presentan las funciones de respuesta para las variables de mayor contribución al modelo.
