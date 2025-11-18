@@ -191,6 +191,8 @@ print("¡Hospederos listos!")
 
 Descargamos los datos de WorldClim 2.1 y realizamos una selección de variables a priori para evitar la multicolinealidad. Se seleccionaron bio10, bio12 y bio15 por su relevancia fisiológica para el desarrollo fúngico (calor y humedad).
 
+
+
 ```r
 ## --- 4. PREPARAR CAPAS AMBIENTALES (env) - NUEVAS VARIABLES ---
 print("Preparando capas ambientales...")
@@ -207,6 +209,153 @@ print("¡Capas 'env' listas!")
 print(env)
 
 ```
+```r
+## ============================================================================
+## PANELES B y C: ANÁLISIS DE MULTICOLINEALIDAD (15 VARIABLES)
+## Este análisis justifica la selección de solo 3 variables
+## Excluye: bio8, bio9, bio18, bio19
+## ============================================================================
+
+library(ggplot2)
+library(terra)
+library(reshape2)
+library(dplyr)
+
+cat(">>> Analizando multicolinealidad de 15 variables bioclimáticas...\n")
+
+# Cargar las 19 capas bioclimáticas
+bio_global <- geodata::worldclim_global(var = "bio", res = 10, path = ".")
+names(bio_global) <- paste0("bio", 1:19)
+americas_extent <- ext(-170, -30, -55, 75)
+env_19 <- terra::crop(bio_global, americas_extent)
+
+# SELECCIONAR SOLO 15 VARIABLES (excluir bio8, bio9, bio18, bio19)
+vars_to_use <- c("bio1", "bio2", "bio3", "bio4", "bio5", "bio6", "bio7", 
+                 "bio10", "bio11", "bio12", "bio13", "bio14", "bio15", 
+                 "bio16", "bio17")
+
+env_15 <- env_19[[vars_to_use]]
+
+cat("Variables incluidas:", paste(vars_to_use, collapse = ", "), "\n")
+cat("Variables excluidas: bio8, bio9, bio18, bio19\n")
+
+# Extraer valores (muestra de 5000 puntos)
+env_15_values <- as.data.frame(env_15, xy = FALSE, na.rm = TRUE)
+if (nrow(env_15_values) > 5000) {
+  set.seed(123)
+  env_15_values <- env_15_values[sample(1:nrow(env_15_values), 5000), ]
+}
+
+# Calcular matriz de correlación
+cor_matrix_15 <- cor(env_15_values, use = "complete.obs")
+
+## --- PANEL B: MDS de 15 variables ---
+cat("\n>>> Panel B: MDS de 15 variables...\n")
+
+mds_result <- cmdscale(1 - abs(cor_matrix_15), k = 2)
+mds_df <- as.data.frame(mds_result)
+colnames(mds_df) <- c("MDS1", "MDS2")
+mds_df$variable <- rownames(cor_matrix_15)
+
+# Resaltar las 3 variables seleccionadas (bio10, bio12, bio15)
+mds_df$selected <- ifelse(mds_df$variable %in% c("bio10", "bio12", "bio15"), 
+                           "Selected", "Not selected")
+
+panel_b <- ggplot(mds_df, aes(x = MDS1, y = MDS2, label = variable, 
+                              color = selected, size = selected)) +
+  geom_point(alpha = 0.7) +
+  geom_text(size = 3, fontface = "bold", nudge_y = 0.02) +
+  scale_color_manual(values = c("Selected" = "#d73027", 
+                                "Not selected" = "gray60")) +
+  scale_size_manual(values = c("Selected" = 5, "Not selected" = 3)) +
+  labs(
+    title = "(b) Variable Correlation Structure (MDS)",
+    subtitle = "15 bioclimatic variables - selected variables (bio10, bio12, bio15) in red",
+    x = "MDS Dimension 1",
+    y = "MDS Dimension 2"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(color = "gray40", size = 9),
+    legend.position = "none",
+    panel.grid = element_line(color = "gray90")
+  )
+
+print(panel_b)
+ggsave("Panel_B_MDS_15vars.png", panel_b, 
+       width = 7, height = 6, dpi = 300, bg = "white")
+
+## --- PANEL C: Heatmap de correlación (15 variables) ---
+cat("\n>>> Panel C: Heatmap de correlación (15 variables)...\n")
+
+cor_melted <- melt(cor_matrix_15)
+colnames(cor_melted) <- c("Var1", "Var2", "value")
+
+# Marcar pares con correlación alta (|r| > 0.7)
+cor_melted$high_cor <- abs(cor_melted$value) > 0.7 & cor_melted$value != 1
+
+# Marcar las 3 variables seleccionadas
+cor_melted$selected_var <- (cor_melted$Var1 %in% c("bio10", "bio12", "bio15")) | 
+                           (cor_melted$Var2 %in% c("bio10", "bio12", "bio15"))
+
+panel_c <- ggplot(cor_melted, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile(color = "white", linewidth = 0.2) +
+  # Agregar borde rojo a las variables seleccionadas
+  geom_tile(data = subset(cor_melted, selected_var), 
+            color = "#d73027", linewidth = 0.8, fill = NA) +
+  scale_fill_gradient2(
+    low = "#4575b4", 
+    mid = "white", 
+    high = "#d73027",
+    midpoint = 0, 
+    limit = c(-1, 1),
+    name = "Pearson\nr"
+  ) +
+  labs(
+    title = "(c) Correlation Matrix (15 variables)",
+    subtitle = "Variables with |r| > 0.7 are highly correlated | Selected vars outlined in red",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    plot.title = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(color = "gray40", size = 9),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+    axis.text.y = element_text(size = 8),
+    panel.grid = element_blank(),
+    legend.position = "right"
+  ) +
+  coord_fixed()
+
+print(panel_c)
+ggsave("Panel_C_Heatmap_15vars.png", panel_c, 
+       width = 8, height = 7, dpi = 300, bg = "white")
+
+cat("\n✓ Paneles B y C guardados (justificación de selección de variables)\n")
+cat("✓ Variables analizadas: 15 (excluidas bio8, bio9, bio18, bio19)\n")
+cat("✓ Variables seleccionadas para modelo: bio10, bio12, bio15\n")
+
+```
+
+<img width="1335" height="584" alt="image" src="https://github.com/user-attachments/assets/526c9ebc-2351-4359-8219-aa309c9cae16" />
+
+
+<img width="764" height="567" alt="image" src="https://github.com/user-attachments/assets/e88b47c1-64fe-47b0-ba38-c20711cfb727" />
+
+<h3>🔍 Interpretación de la Selección de Variables</h3>
+
+<p>
+  Como se evidencia en el <b>MDS (Panel B)</b>, las variables seleccionadas (<span style="color: #d73027;"><b>puntos rojos</b></span>) están maximizadas en distancia, lo que indica que capturan dimensiones climáticas distintas (Temperatura, Precipitación y Estacionalidad).
+</p>
+
+<p>
+  La <b>Matriz de Correlación (Panel C)</b> confirma que, mientras existe alta redundancia entre las variables térmicas (bloque bio1-bio11), las variables seleccionadas (<b>bio10, bio12, bio15</b>) presentan baja correlación cruzada (<i>|r| < 0.7</i>), reduciendo el riesgo de inflación de la varianza en el modelo.
+</p>
+
+
+
 
 
 ## 🗺️ 6. Construcción del Fondo (Background M)
